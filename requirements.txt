@@ -13,3 +13,7 @@ pydantic
 fastapi[all]
 
 loguru
+
+passlib[bcrypt]
+
+PyJWT

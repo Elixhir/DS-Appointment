@@ -15,5 +15,5 @@ class AuthUseCase:
         user = self.user_repo.get_user_by_email(email)
         if not user or not verify_password(password, user.hashed_password):
             raise ValueError("Credenciales inválidas")
-        return create_access_token(user.id)
+        return create_access_token(user.id, user.is_admin)
 

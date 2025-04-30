@@ -17,3 +17,5 @@ loguru
 passlib[bcrypt]
 
 PyJWT
+
+schedule

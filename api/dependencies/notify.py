@@ -14,9 +14,9 @@ SENDER_EMAIL = os.getenv("GMAIL_USER")
 SENDER_PASSWORD = os.getenv("GMAIL_PASSWORD")
 
 def send_appointment_reminder(to_email, appointment_datetime):
-    subject = "Recordatorio de cita"
-    body = f"""Hola,
-Tu cita está próxima. Recuerda que está programada para el día {appointment_datetime.strftime('%Y-%m-%d %H:%M')}."""
+    subject = "Appointment reminder"
+    body = f"""Hello, thank you for choosing Remodeling DS LLC and request our services.
+We would like to remind you that your appointment is coming up, scheduled for {appointment_datetime.strftime('%Y-%m-%d, %H:%M')}."""
 
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
@@ -42,19 +42,12 @@ def notify_three_days_before():
             .filter(Appointment.reminder_sent == False).all()
 
         for appt in appointments:
-            print(f"Revisando cita ID {appt.id} para {appt.date_time}")
             if timedelta(0) < (appt.date_time - now) <= timedelta(days=3):
                 user = appt.user
-                print(f"Usuario: {user}, Email: {user.email if user else 'N/A'}")
                 if user and user.email:
                     send_appointment_reminder(user.email, appt.date_time)
                     appt.reminder_sent = True
                     db.commit()
-                    print(f"Recordatorio marcado como enviado para cita ID {appt.id}")
-                else:
-                    print(f"Usuario o email no válido para cita ID {appt.id}")
-            else:
-                print(f"Cita ID {appt.id} no está dentro del rango de 3 días")
 
     finally:
         db.close()

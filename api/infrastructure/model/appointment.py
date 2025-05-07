@@ -8,6 +8,7 @@ class Appointment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime, nullable=False, index=True)
+    clientPhone = Column(Integer, nullable= False)
     service = Column(String, nullable=True)
     notes = Column(String, nullable=True)
     reminder_sent = Column(Boolean, default=False)

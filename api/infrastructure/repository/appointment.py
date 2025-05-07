@@ -2,22 +2,32 @@ from api.domain.gateway.appointment import AppointmentGateway
 from sqlalchemy.orm import Session
 from api.infrastructure.model.appointment import Appointment
 from api.infrastructure.model.user import User
+from api.presentation.schema.appointment import AppointmentSchema
+from fastapi import HTTPException
 
 class AppointmentRepository(AppointmentGateway):
     def __init__(self, db : Session):
         self.db = db
     
-    def create_appointment(self, data: Appointment, user_id: int):
-        appointment = Appointment(
-            date_time=data.date_time,
-            service=data.service,
-            notes=data.notes,
-            user_id=user_id
-        )
-        self.db.add(appointment)
-        self.db.commit()
-        self.db.refresh(appointment)
-        return appointment
+    def create_appointment(self, data: AppointmentSchema, user_id: int):
+        try:
+            appointment = Appointment(
+                date_time=data.date_time,
+                service=data.service,
+                clientPhone=data.clientPhone,
+                notes=data.notes,
+                user_id=user_id
+            )
+            self.db.add(appointment)
+            self.db.commit()
+            self.db.refresh(appointment)
+            return appointment
+        
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=str(e))
+
     
     def get_appointment_by_user_id(self, user_id):
         return self.db.query(Appointment).filter(
